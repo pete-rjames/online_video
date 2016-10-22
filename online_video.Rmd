@@ -1,0 +1,51 @@
+---
+title: "Online video - who can we reach?"
+author: Using public datasets to model the reach of online video.
+output: html_document
+---
+
+**1. Who can we reach with online video?**
+
+Online video has taken off in many sectors. Education is a primary example: Coursera, Lynda.com and Udemy all use online video as a means of delivering lectures and tutorials to growing numbers of learners. 
+
+This post is about using data to measure the reach of online video as medium. To what extent does people's consumption of online video vary by gender or age, level of education or income bracket? Of course, everyone's going to have their own interests in terms of the content, but let's start with a baseline measure of who is (and isn't) prepared to click on the button and press play. 
+
+**2. Research questions and methodology**
+
+We can start by defining a few simple research questions:
+
+* What fraction of the US population consume online video?
+* Which demograpic variables predict consumption of online video?
+
+The Pew Research Center's Online Video 2013 is a near-ideal dataset for answering these questions because it's  based on a probability sample of the general public conducted by landline and cell phone. As inclusion in the sample frame isn't predicated on internet access or usage, this enables us to directly estimate the fraction of the (on- and off-line) population consuming online video. Thanks to the folks at Pew, the full dataset and documentation is all available online for download. 
+
+This analysis is split into two parts:
+
+* Exploratory analysis: visualizing associations between online video consumption and as range of demographic variables included in the dataset; 
+* Statistical modelling: fitting a logistic regression model to predict whether individuals do/do not watch online video based on demographic predictors 
+
+**3. Exploratory Analysis**
+
+*What fraction of the US population consume online video?*
+
+The survey was set up to first establish whether respondents were online, including via smarthpone. If respondents indicated they were online, they were then asked whether or not they watched or downloaded online video (and if so, subsequent questions to explore consumption of different types of content).
+
+The fraction of the US population consuming online video is XXX. Plot 1 below shows how this results from: 
+
+only a subset of the *whole population* is online
+only a subset of the *online population* watches online video
+
+*Which demograpic variables predict consumption of online video?*
+
+**4. Statistical modelling**
+
+
+
+**5. Conclusion: Who can we reach with online video?**
+
+
+
+
+
+
+
