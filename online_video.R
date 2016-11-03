@@ -237,7 +237,7 @@ rm(uni_mod, uni_fit_list)
 set.seed(1000) 
 
 df_mod <- df %>%
-  select(psraid, weight, sample, all_video, age_10yrs, race_group, education, income_10k) %>%
+  select(psraid, weight, sample, all_video, age_group, age_10yrs, race_group, education, income_10k, income) %>%
   filter(complete.cases(psraid, weight, sample, all_video, age_10yrs, race_group, education, income_10k))
 
 df_train <- df_mod %>%
@@ -278,8 +278,10 @@ fit_table <- left_join(df_fit_1[,c(1,2,5)], df_fit_2[,c(1,2,5)], by = "term") %>
   mutate(term = gsub("([[:lower:]])([[:upper:]])", "\\1 \\2", term))
   colnames(fit_table)[2:5] <- c("estimate (m1)", "p.value (m1)", 
                               "estimate (m2)", "p.value (m2)")  
+sigma(fit_1)
+fit_1$deviance
+fit_2$deviance
 
-  
 # 6.2.4 Testing multivariate model (Fit_2)
 
 df_test$mean_prob <- svymean(~ all_video, design = des_train, na.rm = TRUE)
@@ -292,6 +294,10 @@ df_test$mod_error <- ifelse(df_test$mod_outcome != df_test$all_video, 1, 0)
 
 null_error <- round(mean(na.omit(df_test$mean_error)),2)
 model_error <- round(mean(na.omit(df_test$mod_error)),2)
+
+psych::describeBy(df_test$mod_error, df_test$age_group)
+psych::describeBy(df_test$mod_error, df_test$education)
+psych::describeBy(df_test$mod_error, df_test$income)
 
 # 7. Using the model 
 
@@ -307,6 +313,8 @@ quantiles <- seq(from = 0.1, to = 0.5, by = 0.1)
 age_sim <- lapply(quantiles, age_inc_sim)
 df_age <- do.call(rbind.data.frame, age_sim)
 df_age$prob <- predict.glm(fit_2, newdata = df_age, type = "response") 
+df_age$outcome <- round(df_age$prob,0)
+final_p <- 100*round(mean(df_age$outcome[df_age$age_10yrs <= 6.5]),2)
 
 ggplot(df_age, aes(x = (age_10yrs*10), y = prob, color = decile)) +
   geom_freqpoly(stat = "identity", size = 1) +
@@ -314,6 +322,6 @@ ggplot(df_age, aes(x = (age_10yrs*10), y = prob, color = decile)) +
   ylab("Probability") + 
   xlab("Age") +
   geom_hline(yintercept = 0.5, linetype = 2, color = "dark grey") + 
-  ggtitle("Probability of watching online video as predicted by age for 5 income deciles")
+  ggtitle("Probability of watching online video by age for 5 income deciles")
 
 
