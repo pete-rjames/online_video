@@ -164,8 +164,6 @@ Plot 3 below displays the proportion of the *online population* (a subset of the
 
 ```{r plot3, fig.width = 12, fig.height = 6, echo = FALSE} 
 
-nrow(df[df$iuser == "0",]) == sum(is.na(df$iuser_video)) # defining NAs: non-online
-
 iuser_video_dyn <- function(x) {
   variable_name <- names(des$variables[(x)])
   temp <- svyby(~ iuser_video,
@@ -323,13 +321,13 @@ The error rate of the null model is **`r null_error`**, reducing to **`r model_e
 
 **5. Using the model**
 
-The statistical model corresponds to some of observations made during the exploratory analysis: the probability of watching online video decreases with age and increases with educational level and income. Using the model, we can now extend these observations to quantify the impact of variation in each predictor on the outcome.
+The statistical model corresponds to our initial observations when exploring the data: the probability of watching online video decreases with age and increases with educational level and income. Using the model, we can now quantify the impact of variation in each predictor on the outcome. This final section demonstrates how this can be used in planning direct services using online video.
 
-As an example, a service provider may inform its decisions on investing in online video based on the likelihood that service users already engage with the medium. In this context, it may be useful to use a threshold for decision making, such as that 50% of a segment watches online video. We can use the logistic regression model to compute this probability for specific segements based on demographics. 
+As an example, a direct service provider may decide that its decision about whether to invest in online video should be based on whether its service users are likely to engage with communications via this channel. They may want to use a threshold for committing resources, such as that 50% of a segment watches online video. We can use the logistic regression model to compute estimate this probability based on known demographic characteristics of the service users.
 
-Take the example of a social service provider primarily working with low-income, working-age adults. On the one hand, the negative coefficient for age may suggest that the medium is appropriate for a working age audience; on the other hand, the positive coefficients for income (and educational level) may suggest caution in investing in online video. How to balance these two competing considerations?
+For this example, let's assume that the direct service provider is working with a popualtion that is predominantly working-age and low-incomew. On the one hand, the negative coefficient for age may suggest that online video is appropriate for a working age audience; on the other hand, the positive coefficients for income (and educational level) may suggest caution in investing in online video. How to balance these two competing considerations? 
 
-Using the regression model, we can compute estimated probabilities for a hypothetical population of adults. As a simple example, we construct a population that is all non-college educated, split into 5 subgroups with the incomes corresponding to the bottom five income deciles, and with a range of ages within each subgroup from 18 to 80. Plot 4 below shows how the modelled probability of watching online video declines with age for 5 bottom income deciles. 
+Using the statistical model, we can compute estimated probabilities for a hypothetical population of adults corresponding to the characteristics of the service users. In this example, we will construct a population that is all non-college educated, split into 5 subgroups with the incomes corresponding to the bottom five income deciles, and with a range of ages within each subgroup from 18 to 80. Plot 4 below shows how the modelled probability of watching online video declines with age for 5 bottom income deciles. 
 
 ```{r plot4, fig.width = 8, fig.height = 5, echo = FALSE}
 
@@ -356,7 +354,8 @@ ggplot(df_age, aes(x = (age_10yrs*10), y = prob, color = decile)) +
 
 ```
 
-Using this plot, we can predict that the threshold value of 50% is exceeded for all of the bottom five income deciles up until around age 40 years. The curve then declines such that by around age 60 years the probability has decreased to 25% for all of the bottom five income deciles. Our expectations for reaching different audience segements can therefore be quantitatively defined as part of the service planning process. 
+Using this plot, we can predict that the threshold value of 50% is exceeded for all of the bottom five income deciles up until around age 40 years. The curve then declines such that by around age 60 years the probability has decreased to 25% for all of the bottom five income deciles. In this way, our expectations for reaching different segments of the user-base can be quantitatively defined as part of the service planning process. 
+
 
 **Acknowledgements**
 
