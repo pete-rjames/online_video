@@ -1,40 +1,27 @@
 ---
 title: "Online video for direct services: who can we reach?"
-output: html_document
+output: 
+  html_document:
+       theme: "sandstone"
 ---
 
 **1. Motivation**
 
-Online video has taken off in many sectors. Education is a primary example: companies such as Coursera, Lynda.com and Udemy all use online video to deliver lectures and tutorials to large numbers of learners. It's not difficult to see the value in building products around online video: users have easy and flexible access to an engaging learning experience, and once this content has been through production, it can be delivered to a large and geographically-dispersed audience.
+Online video has taken off in many sectors. Education is a primary example: companies such as [Coursera](https://www.coursera.org/), [Lynda.com](https://www.lynda.com/) and [Udemy](https://www.udemy.com/) all use online video to deliver lectures and tutorials to large numbers of learners. 
 
-The growth of online video suggests a use case for organizations providing direct services to the public, such as local government agencies or legal self-help programs. These organizations often need to offer generic information and guidance at scale, but text-based content remains the default mode of communication. Could online video provide a more engaging and effective method of communicating for these services? 
+Building products around online video makes a lot of sense. Users gain flexible access to an engaging experience, and once content has been developed, it can reach a large, geographically-dispersed audience whilst keeping costs low.
 
-In considering the potential for online video in direct services, it's important to develop a baseline understanding of its demographic reach as a channel. This leads to two questions that are the focus of this blog:
+The growth of online video suggests a use case for organizations providing direct services to the public, such as local government agencies or legal self-help programs. Could online video provide a more engaging and effective method of communication for these services? 
+
+Direct service organizations considering investing in online video may find it helpful to start from a baseline measure of who they probably can and can't reach through this medium. This leads to two questions that are the focus of this blog:
 
 1. *Depth of reach:* what fraction of the US population watches online video?  
 2. *Breadth of reach:* how does consumption of online video vary across demographic groups?
 
-The sections below use a public dataset to answer these questions and demonstrates how statistical modelling can be used to plan direct services using online video.  
+We will use public dataset to answer these questions and demonstrate the use of  a statistical model for planing direct services using online video.  
 
 **2. Methodology**
 
-The Pew Research Center's [Online Video 2013](http://www.pewinternet.org/2013/10/10/online-video-2013/), part of the Pew Internet and American Life project, is a useful data source in this context. 
-
-The dataset comprises responses to questions about consumption of online video  included in an omnibus survey in 2013. As the responses were obtained from a probability sample of (English speaking) US adults conducted by landline and cell phone, and therefore inclusion in the sample frame wasn't predicated on internet access, we can use this dataset to directly estimate the fraction of the population watching online video. And thanks to the folks at Pew, the dataset and documentation is all available online for [download](http://www.pewresearch.org/data/download-datasets/). 
-
-This analysis of the Online Video 2013 dataset is split into two parts:
-
-1. *Exploratory analysis*: exploring associations between online video consumption and a range of demographic variables; 
-2. *Statistical modelling*: fitting a logistic regression model to predict whether individuals watch online video based on demographic predictors.
-
-The key variables used in this analysis are:
-
-1. *Response*: online (Yes/No) and, as a subset of the online popualtion, watches online video (Yes/No);
-2. *Predictors*: sex, race, age, education, income.
-
-Those interested in the details of the analysis can go to the [R code](https://github.com/pete-rjames/online_video/blob/master/online_video.R) on Github. 
-
-**3. Exploratory analysis**
 
 ```{r setup, include = FALSE}
 
@@ -45,9 +32,9 @@ rm(libs)
 
 # 2. Load data >> df_import
 
-df_import <- read.spss("~/R/data/July-2013--Online-Video-(onmibus)/Omnibus_July_2013_Video_spss.sav", to.data.frame = TRUE)
+# mac: df_import <- read.spss("~/R/data/July-2013--Online-Video-(onmibus)/Omnibus_July_2013_Video_spss.sav", to.data.frame = TRUE)
 # pc: 
-# df_import <- read.spss(".//July-2013--Online-Video-(onmibus)//Omnibus_July_2013_Video_spss.sav", to.data.frame = TRUE) # ignore warnings; 
+df_import <- read.spss(".//July-2013--Online-Video-(onmibus)//Omnibus_July_2013_Video_spss.sav", to.data.frame = TRUE) # ignore warnings; 
 df_import <- df_import %>% mutate(age = ifelse(age == 99, NA, age)) # convert 99 to NA for age
 
 # 3. Add derived degmoraphic variables >> df_base
@@ -98,7 +85,23 @@ rm(df_import, df_base, inc_midpoints)
 
 ```
 
-Plot 1 below displays the proportion of US adults that are (a) online, and if online, (b) watching online video. 
+The Pew Research Center's [Online Video 2013](http://www.pewinternet.org/2013/10/10/online-video-2013/), part of the Pew Internet and American Life project, is a useful source in this context. The dataset comprises responses to questions about consumption of online video  included in an omnibus survey in 2013. As the responses were obtained from a probability sample of `r nrow(df)` US adults conducted by landline and cell phone, and therefore inclusion in the sample frame wasn't predicated on internet access, we can use the survey data to directly estimate the fraction of the population watching online video. And thanks to the folks at Pew, the dataset and documentation is all available online for [download](http://www.pewresearch.org/data/download-datasets/). 
+
+This analysis of the Online Video 2013 dataset is split into two parts:
+
+1. *Exploratory analysis*: exploring associations between online video consumption and a range of demographic variables; 
+2. *Statistical modelling*: fitting a logistic regression model to predict whether individuals watch online video based on demographic predictors.
+
+The key variables used in this analysis are:
+
+1. *Response/outcome variables*: whether respondents are online (Yes/No) and, as a subset of the online popualtion, whether they watch online video (Yes/No);
+2. *Demographic variables/inputs*: sex, race, age, education and income.
+
+Those interested in the details of the analysis can go to the [R code](https://github.com/pete-rjames/online_video/blob/master/online_video.R) on Github. 
+
+**3. Exploratory analysis**
+
+Plot 1 below displays the proportion of US adults that are online, and if online, the proportion who watch online video. 
 
 ```{r plot1, fig.width = 8, fig.height = 5, echo = FALSE}
 
@@ -125,7 +128,9 @@ ggplot(df_summary, aes(x = variable, y = mean, fill = variable, label = round(me
   ggtitle("Proportion of US population online and watching online video, 2013")
 ```
 
-Internet usage is an obvious and significant factor limiting the consumption of online video. To explore variation in internet access, Plot 2 below displays proportions of US adults that are online by all demographic variables in the dataset. Each variable is color coded with its constituent levels plotted separately. 
+As we would exepct, internet usage acts as a limiting factor for the consumption of online video; around `r 100*round((1 - df_summary[1,2]),2)` percent of the potential audience for online video is "lost" because they don't use (or have access to) the internet. 
+
+To explore variation in internet usage, Plot 2 below displays proportions of US adults that are online by all demographic variables in the dataset. Each variable is color coded and its constituent levels are plotted separately. 
 
 ```{r plot2, fig.width = 12, fig.height = 6, echo = FALSE}
 
@@ -157,10 +162,9 @@ iuser_plot
 
 ```
 
-Age, education and income all appear to be associated with internet usage. The proportion of adults online decreases in older age groups and increases with education and income level (though note the instability in the transition between income levels $30-49K and $50-74k). By contrast, sex and race appear less associated with internet usage.  
+Age, education and income all appear to be associated with internet usage. The proportion of adults using the internet decreases in older age groups and increases with education and income level (though note the instability in the transition between income levels $30-49K and $50-74k). By contrast, sex and race appear don't appear to be associated with internet usage.  
 
-Plot 3 below displays the proportion of the *online population* (a subset of the main sample) that also watches online video for all demographic variables. 
-
+Plot 3 below displays the proportion of the *online population* that also watches online video. Again, each variable is color coded and its constituent levels are plotted separately. 
 
 ```{r plot3, fig.width = 12, fig.height = 6, echo = FALSE} 
 
@@ -191,25 +195,37 @@ iuser_video_plot
 rm(iuser_video_dyn, iuser_video_list)
 ```
 
-With some variations, we can see similar associations between demographic variables and consumption of online video as for internet usage in general. 
+We see similar associations between demographic characteristics and consumption of online video as for internet usage in general, albeit with some variation. 
 
-In this case, the proportion of adults watching online video decreases in older age groups, however the association seems more pronounced than for internet usage in general. By contrast, the positive association with educational and income levels seems less pronounced (and again, note the instability in the transition between income levels <$30k and $30-49K). Race also seems to have a possible association with watching online video, with a greater proportion of nonwhite respondents watching online video than white respondents. Sex seems unassociated with consumption of online video as it did for internet access in general.
+The proportion of adults watching online video decreases in older age groups, but the association seems more pronounced than for internet usage in general. By contrast, the positive association with educational and income levels seems less pronounced (and again, note the instability in the transition between income levels <$30k and $30-49K). Race also now seems to have a possible association with watching online video, with a greater proportion of nonwhite^[The category "nonwhite" used in the Pew cross-tabulations encompasses respondents (a) describing themselves as of Hispanic or Latino origin and/or (b) respondents describing their race as Black or African-American, Asian or Pacific Islander, Mixed race, Native American/American Indian or Other] respondents watching online video than white respondents. 
 
-These descriptive statistics suggests some of the demographic predictors that will be important in the statistical model developed below. They do not indicate the *independent* impact of any variable at this stage because the statistic for any single variable may "mask" the effect of associations with other variables that also have an impact on the response. 
+These descriptive statistics suggests some of the demographic characteristics that will be important in the statistical model developed below. They do not indicate the independent impact of any variable, however, because the statistics for any single variable may "mask" the effect of associations with other variables that are also related to internet usage and consumption of online video. For example, the difference between white and nonwhite respondents described above may in fact simply reflect the relatively young age profile of the nonwhite sample.  
 
 **4. Statistical modelling**
 
 *Introduction*
 
-This section develops a statistical model for predicting consumption of online video based on demographic variables. 
+This section develops a statistical model for predicting consumption of online video based on demographic inputs. 
 
-The model is constructed to predict whether or not an individiual watches online video (Yes/No) and uses the full weighted sample as its base value. This gives a more directly applicable model than would be achieved by separately modelling (a) whether an individual is online, (b) and if so, whether they watch online video. And as we have seen above, there are similar (if not identical) associations between demographic predictors and both of these outcomes. 
+The model is constructed to predict whether or not an individiual watches online video (Yes/No). . This gives a more directly applicable model than would be achieved by separately modelling (i) whether an individual is online, (ii) and if so, whether they watch online video. And as we have seen above, there are similar (if not identical) associations between demographic variables and both of these outcomes. 
 
-As the response variable in the model is binary, a logistic regression model is selected to predict the probability of watching online video (0 => *Pr* <= 1). The predicted outcome (0 | 1) is based on rounding the probability to the nearest integer. 
+As the response variable is binary, a logistic regression model is selected to predict the probability of watching online video (0 => *Pr* <= 1). The predicted outcome (0 | 1) is based on rounding the probability to the nearest integer. 
 
-*Stage 1: selecting predictors*
+It's worth noting that using a binary variable is perhaps the simplest way to model online video consumption. If we had data on usage patterns, we could use a continous or count variable to model differences in the intensity of online video consumption based on demographic inputs. 
 
-Prior to developing the multivariate model, we build a series of single-predictor models using each demographic predictor in turn. By identifying predictors where the sign of the coefficient has a high probability of arising through random variation, we can identify predictors that are clearly unrelated to the outcome (even if the effects of other variables are masked) and exclude them from the multivariate model. The coefficients for single-predictor models are shown in Table 1 below. 
+The following demographic inputs were used in the modelling described below:
+
+* `sex`: male (ref. level) and female
+* `age_10yrs`: continous age variable scaled to a unit of 10yrs
+* `race_group`: white (ref. level) and nonwhite
+* `income_10k`: pseudo-continuous variable based on the mid-points of the income bands; scaled to a unit of $10,000
+* `education`: high school or less (ref. level), some college and college graduate
+
+*Stage 1: selecting inputs*
+
+Prior to developing the multivariate model, we build a series of single-input models based on each demographic input in turn. The dataset is not partitioned at this stage because we do not need to reserve observations for testing a model.
+
+By identifying inputs where the sign of the coefficient has a high probability of arising through random variation, we can identify inputs that are very unlikely to be related to the outcome. The coefficients for single-input models are shown in Table 1 below. 
 
 ```{r table1, echo = FALSE, warning= FALSE}
 
@@ -228,7 +244,7 @@ df_uni_fit <- do.call(rbind.data.frame, uni_fit_list)
 df_uni_fit <- df_uni_fit %>%
   rowwise() %>%
   mutate(term = gsub("([[:lower:]])([[:upper:]])", "\\1 \\2", term)) %>%
-  mutate_each(funs(round(.,3)), - term)  
+  mutate_each(funs(round(.,3)), - term) 
 
 kable(df_uni_fit,
       format = "html", output = F, align = c("l", "c", "c", "c"), escape=F,
@@ -238,14 +254,11 @@ rm(uni_mod, uni_fit_list)
 
 ```
 
-As strongly suggested by the exploratory analysis, the single-predictor model suggests that `sex` is very unlikely to be a significant predictor and should not be entered into the multivariate model. All other variables can be entered into the multivariate model as the confidence intervals for coefficients do not cross the zero threshold. 
+All variables except `sex` can be entered into the multivariate model because the confidence intervals for the coefficients would not cross zero. 
 
-*Stage 2: training the model*
+*Stage 2: training the multivariate model*
 
-As the number of observations is reasonably large, and the range of demographic predictors reasonably constrained, we begin by building a model using all remaining demographic variables, `m1`. This model is fit to a randomly selected training dataset accounting for two-thirds of the full dataset. This first iteration of the model suggests that `race` is not a significant predictor. The second iteration `m2` excludes race and therefore constrains the predictors to `age`, `education` and `income`. This model has coefficients that are all statistically significant, and reducing the number of variables entered into the model only causes a negligible increase in the residual standard deviation. The coefficients for the two models are summarized in the table below.
-
-
-```{r table2, echo = FALSE}
+```{r model, include = FALSE} 
 
 set.seed(1000) 
 
@@ -291,11 +304,22 @@ fit_table <- left_join(df_fit_1[,c(1,2,5)], df_fit_2[,c(1,2,5)], by = "term") %>
   mutate(term = gsub("([[:lower:]])([[:upper:]])", "\\1 \\2", term))
   colnames(fit_table)[2:5] <- c("estimate (m1)", "p.value (m1)", 
                               "estimate (m2)", "p.value (m2)")  
-  
+
+```
+
+
+We begin by building a multivariate model using all remaining demographic variables, `m1`. This model is fit to a randomly selected training dataset  accounting for two-thirds of the full dataset (n = `r nrow(df_train)`). 
+
+This first iteration of the model suggests that `race_group` is not a significant predictor. The second iteration, `m2`, excludes race and therefore constrains the inputs to `age_10yrs`, `income_10k` and `education`. 
+
+This model has coefficients that are all statistically significant. The residual deviance of the model is `r round(fit_2$deviance,2)` compared to a null deviance of `r round(fit_2$null.deviance,2)`. The coefficients for the two models are summarized in the table below.
+
+```{r table2, echo = FALSE}
+
 kable(fit_table,
       format = "html", output = F, align = c("l", "c", "c", "c", "c"), escape=F,
       table.attr="class='table table-striped table-hover'")
-
+  
 ```
 
 *Stage 3: testing the model*
@@ -315,19 +339,19 @@ model_error <- round(mean(na.omit(df_test$mod_error)),2)
 
 ```
 
-The predictive accuracy of the model can be assessed by comparing its performance against a null model based on the weighted mean of the training dataset. The two models are compared using a test dataset that comprises the remaining one third of observations in the original dataset. 
+The predictive accuracy of the model can be assessed by comparing its performance against a null model based on the weighted mean of the training dataset. The two models are compared using a test dataset that comprises the remaining one third of observations in the original dataset (n = `r nrow(df_test)`). 
 
-The error rate of the null model is **`r null_error`**, reducing to **`r model_error`** for the fitted model. This substantial decrease in the error rate indicates that the fitted model generalizes effectively to a new set of observations that did not inform the development of the model. 
+The error rate of the null model is **`r null_error`**, reducing to **`r model_error`** for the fitted model `m2`. This substantial decrease in the error rate indicates that the fitted model generalizes reasonably to a new set of observations that did not inform the development of the model. 
 
 **5. Using the model**
 
-The statistical model corresponds to our initial observations when exploring the data: the probability of watching online video decreases with age and increases with educational level and income. Using the model, we can now quantify the impact of variation in each predictor on the outcome. This final section demonstrates how this can be used in planning direct services using online video.
+The statistical model corresponds to our initial observations when exploring the data: the probability of watching online video decreases with age and increases with educational level and income. Using the model, we can now quantify the impact of variation in each predictor on the outcome. This final section demonstrates how this capability can be used in planning direct services using online video.
 
-As an example, a direct service provider may decide that its decision about whether to invest in online video should be based on whether its service users are likely to engage with communications via this channel. They may want to use a threshold for committing resources, such as that 50% of a segment watches online video. We can use the logistic regression model to compute estimate this probability based on known demographic characteristics of the service users.
+As an example, a direct service provider may decide to base its decision on investing in online video on whether its service users are likely to engage with this channel. They may want to use a threshold for committing resources, such as that 50% of a serivce users watch online video in general. We can use the logistic regression model to  estimate this probability based on known demographic characteristics of the service users.
 
-For this example, let's assume that the direct service provider is working with a popualtion that is predominantly working-age and low-incomew. On the one hand, the negative coefficient for age may suggest that online video is appropriate for a working age audience; on the other hand, the positive coefficients for income (and educational level) may suggest caution in investing in online video. How to balance these two competing considerations? 
+For this example, let's assume that the direct service provider is working with a popualtion that is predominantly working-age and low-income. On the one hand, the negative coefficient for age may suggest that online video is appropriate for a working age audience, at least up until a certain age; on the other hand, the positive coefficients for income (and educational level) may suggest caution in investing in online video. How to balance these two competing considerations?
 
-Using the statistical model, we can compute estimated probabilities for a hypothetical population of adults corresponding to the characteristics of the service users. In this example, we will construct a population that is all non-college educated, split into 5 subgroups with the incomes corresponding to the bottom five income deciles, and with a range of ages within each subgroup from 18 to 80. Plot 4 below shows how the modelled probability of watching online video declines with age for 5 bottom income deciles. 
+Using the statistical model, we can compute estimated probabilities for a hypothetical population of adults corresponding to the characteristics of service users. In this example, we will construct a population that is all non-college educated, split into five subgroups with incomes corresponding to the bottom five income deciles, and with a range of ages within each subgroup from 18 to 80. Plot 4 below shows how the modelled probability of watching online video declines with age across these five groups. 
 
 ```{r plot4, fig.width = 8, fig.height = 5, echo = FALSE}
 
@@ -343,6 +367,8 @@ quantiles <- seq(from = 0.1, to = 0.5, by = 0.1)
 age_sim <- lapply(quantiles, age_inc_sim)
 df_age <- do.call(rbind.data.frame, age_sim)
 df_age$prob <- predict.glm(fit_2, newdata = df_age, type = "response") 
+df_age$outcome <- round(df_age$prob,0)
+final_p <- 100*round(mean(df_age$outcome[df_age$age_10yrs <= 6.5]),2)
 
 ggplot(df_age, aes(x = (age_10yrs*10), y = prob, color = decile)) +
   geom_freqpoly(stat = "identity", size = 1) +
@@ -354,10 +380,13 @@ ggplot(df_age, aes(x = (age_10yrs*10), y = prob, color = decile)) +
 
 ```
 
-Using this plot, we can predict that the threshold value of 50% is exceeded for all of the bottom five income deciles up until around age 40 years. The curve then declines such that by around age 60 years the probability has decreased to 25% for all of the bottom five income deciles. In this way, our expectations for reaching different segments of the user-base can be quantitatively defined as part of the service planning process. 
+Using this plot, we can predict that the threshold value of 50% is exceeded for all of the bottom five income deciles up until around age 40 years. The curve then declines such that by around age 60 years the probability has decreased to 25% for all of the bottom five income deciles. 
 
+So what does that mean for our threshold value? If we constrain this hypothetical population to working age adults aged 18-65, the estimated proportion that would watch online video is `r final_p` percent. So just above the threshold; and if we incorporated error terms, it would probably show a chance that the proportion would dip below 50%. Perhaps the more important point is that we could expect the consumption of online video would be concentrated among younger adults with incomes closer to the median. 
+
+The above example is highly simplified because it doesn't take into account the covariation across demographic characteristics that will exist in the real profile of service users. However, it demonstrates how we can use a model to provide some quantitative definition on our expectations for reaching different segments of serivce users. This will enable the organization to make more informed decisions about where to invest resources in developing new services. And if online services are developed, the model would provide a realistic baseline for measuring uptake and in particular for understanding variation in engagement across the user base.
 
 **Acknowledgements**
 
 Data: Pew Research Center  
-R: R core development team; packages contributed by Frank E Harrell Jr, Thomas Lumley, David Robinson, Hadley Wickham and Yihui Xie.
+R: R core development team; Rstudio; R packages contributed by Frank E Harrell Jr, Thomas Lumley, David Robinson, Hadley Wickham and Yihui Xie.
