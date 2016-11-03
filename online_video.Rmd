@@ -45,9 +45,9 @@ rm(libs)
 
 # 2. Load data >> df_import
 
-# mac: df_import <- read.spss("~/R/data/July-2013--Online-Video-(onmibus)/Omnibus_July_2013_Video_spss.sav", to.data.frame = TRUE)
+df_import <- read.spss("~/R/data/July-2013--Online-Video-(onmibus)/Omnibus_July_2013_Video_spss.sav", to.data.frame = TRUE)
 # pc: 
-df_import <- read.spss(".//July-2013--Online-Video-(onmibus)//Omnibus_July_2013_Video_spss.sav", to.data.frame = TRUE) # ignore warnings; 
+# df_import <- read.spss(".//July-2013--Online-Video-(onmibus)//Omnibus_July_2013_Video_spss.sav", to.data.frame = TRUE) # ignore warnings; 
 df_import <- df_import %>% mutate(age = ifelse(age == 99, NA, age)) # convert 99 to NA for age
 
 # 3. Add derived degmoraphic variables >> df_base
