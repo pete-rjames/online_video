@@ -324,4 +324,4 @@ ggplot(df_age, aes(x = (age_10yrs*10), y = prob, color = decile)) +
   geom_hline(yintercept = 0.5, linetype = 2, color = "dark grey") + 
   ggtitle("Probability of watching online video by age for 5 income deciles")
 
-
+ggsave(file = "online_video.PNG")
